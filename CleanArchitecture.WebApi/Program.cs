@@ -7,6 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<ICarService, CarService>();
 
+builder.Services.AddAutoMapper(typeof(CleanArchitecture.Persistence.AssemblyReference).Assembly);
+
 string connectionString = builder.Configuration.GetConnectionString("SqlServerConnection")!;
 builder.Services.AddDbContext<AppDbContext>(options =>
         options.UseSqlServer(connectionString));
