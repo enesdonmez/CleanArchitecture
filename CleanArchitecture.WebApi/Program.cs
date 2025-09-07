@@ -2,11 +2,14 @@ using CleanArchitecture.Application.Behaviors;
 using CleanArchitecture.Application.Services;
 using CleanArchitecture.Persistence.Context;
 using CleanArchitecture.Persistence.Services;
+using CleanArchitecture.WebApi.Middlewares;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddTransient<ExceptionMiddleware>();
 
 builder.Services.AddScoped<ICarService, CarService>();
 
@@ -35,6 +38,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddlewareExtensions();
 
 app.UseHttpsRedirection();
 
