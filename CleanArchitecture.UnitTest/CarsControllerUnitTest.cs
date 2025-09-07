@@ -21,6 +21,7 @@ public class CarsControllerUnitTest
         mediatrMock.Setup(m => m.Send(createCarCommand, cancellationToken)).ReturnsAsync(messageResponse);
         CarsController carsController = new(mediatrMock.Object);
 
+
         //act
         
         var result = await carsController.Create(createCarCommand, cancellationToken);
