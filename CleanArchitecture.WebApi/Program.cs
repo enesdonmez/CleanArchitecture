@@ -1,5 +1,6 @@
 using CleanArchitecture.Application.Behaviors;
 using CleanArchitecture.Application.Services;
+using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Domain.Repositories;
 using CleanArchitecture.Persistence.Context;
 using CleanArchitecture.Persistence.Repositories;
@@ -8,6 +9,7 @@ using CleanArchitecture.WebApi.Middlewares;
 using FluentValidation;
 using GenericRepository;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
@@ -24,6 +26,9 @@ builder.Services.AddAutoMapper(typeof(CleanArchitecture.Persistence.AssemblyRefe
 string connectionString = builder.Configuration.GetConnectionString("SqlServerConnection")!;
 builder.Services.AddDbContext<AppDbContext>(options =>
         options.UseSqlServer(connectionString));
+
+builder.Services.AddIdentity<User, IdentityRole>()
+    .AddEntityFrameworkStores<AppDbContext>();
 
 builder.Services.AddControllers()
     .AddApplicationPart(typeof(CleanArchitecture.Presentation.AssemblyReference).Assembly);
