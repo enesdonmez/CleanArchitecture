@@ -18,6 +18,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddTransient<ExceptionMiddleware>();
 
 builder.Services.AddScoped<ICarService, CarService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUnitOfWork>(srv => srv.GetRequiredService<AppDbContext>());
 builder.Services.AddScoped<ICarRepository, CarRepository>();
 
