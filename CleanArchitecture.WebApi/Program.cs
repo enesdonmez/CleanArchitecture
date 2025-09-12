@@ -1,5 +1,6 @@
 using CleanArchitecture.Application.Abstractions;
 using CleanArchitecture.Application.Behaviors;
+using CleanArchitecture.Application.Extensions;
 using CleanArchitecture.Application.Services;
 using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Domain.Repositories;
@@ -52,7 +53,10 @@ builder.Services.AddMediatR(cfr =>
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 builder.Services.AddValidatorsFromAssembly(typeof(CleanArchitecture.Application.AssemblyReference).Assembly);
 
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi(opt =>
+{
+    opt.AddDocumentTransformer<BearerSecuritySchemeTransformer>();
+});
 builder.Services.AddEndpointsApiExplorer();
 
 var app = builder.Build();
