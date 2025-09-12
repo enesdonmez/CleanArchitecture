@@ -1,11 +1,15 @@
+using CleanArchitecture.Application.Abstractions;
 using CleanArchitecture.Application.Behaviors;
 using CleanArchitecture.Application.Services;
 using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Domain.Repositories;
+using CleanArchitecture.Infrastructure.Authentication;
+using CleanArchitecture.Infrastructure.Services;
 using CleanArchitecture.Persistence.Context;
 using CleanArchitecture.Persistence.Repositories;
 using CleanArchitecture.Persistence.Services;
 using CleanArchitecture.WebApi.Middlewares;
+using CleanArchitecture.WebApi.OptionsSetup;
 using FluentValidation;
 using GenericRepository;
 using MediatR;
@@ -19,8 +23,15 @@ builder.Services.AddTransient<ExceptionMiddleware>();
 
 builder.Services.AddScoped<ICarService, CarService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IMailService, MailService>();
 builder.Services.AddScoped<IUnitOfWork>(srv => srv.GetRequiredService<AppDbContext>());
 builder.Services.AddScoped<ICarRepository, CarRepository>();
+
+builder.Services.AddScoped<IJwtProvider,JwtProvider>();
+builder.Services.ConfigureOptions<JwtOptionsSetup>();
+builder.Services.ConfigureOptions<JwtBearerOptionsSetup>();
+
+builder.Services.AddAuthentication().AddJwtBearer();
 
 builder.Services.AddAutoMapper(typeof(CleanArchitecture.Persistence.AssemblyReference).Assembly);
 
