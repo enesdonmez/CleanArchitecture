@@ -1,64 +1,11 @@
-using CleanArchitecture.Application.Abstractions;
-using CleanArchitecture.Application.Behaviors;
-using CleanArchitecture.Application.Extensions;
-using CleanArchitecture.Application.Services;
-using CleanArchitecture.Domain.Entities;
-using CleanArchitecture.Domain.Repositories;
-using CleanArchitecture.Infrastructure.Authentication;
-using CleanArchitecture.Infrastructure.Services;
-using CleanArchitecture.Persistence.Context;
-using CleanArchitecture.Persistence.Repositories;
-using CleanArchitecture.Persistence.Services;
+using CleanArchitecture.WebApi.Configurations;
 using CleanArchitecture.WebApi.Middlewares;
-using CleanArchitecture.WebApi.OptionsSetup;
-using FluentValidation;
-using GenericRepository;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddTransient<ExceptionMiddleware>();
+builder.Services.InstallServices(builder.Configuration,typeof(IServiceInstaller).Assembly);
 
-builder.Services.AddScoped<ICarService, CarService>();
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IMailService, MailService>();
-builder.Services.AddScoped<IRoleService, RoleService>();
-builder.Services.AddScoped<IUserRoleService, UserRoleService>();
-builder.Services.AddScoped<IUnitOfWork>(srv => srv.GetRequiredService<AppDbContext>());
-builder.Services.AddScoped<ICarRepository, CarRepository>();
-builder.Services.AddScoped<IUserRoleRepository, UserRoleRepository>();
-
-builder.Services.AddScoped<IJwtProvider,JwtProvider>();
-builder.Services.ConfigureOptions<JwtOptionsSetup>();
-builder.Services.ConfigureOptions<JwtBearerOptionsSetup>();
-
-builder.Services.AddAuthentication().AddJwtBearer();
-builder.Services.AddAuthorization();
-
-builder.Services.AddAutoMapper(typeof(CleanArchitecture.Persistence.AssemblyReference).Assembly);
-
-string connectionString = builder.Configuration.GetConnectionString("SqlServerConnection")!;
-builder.Services.AddDbContext<AppDbContext>(options =>
-        options.UseSqlServer(connectionString));
-
-builder.Services.AddIdentity<User, Role>()
-    .AddEntityFrameworkStores<AppDbContext>();
-
-builder.Services.AddControllers()
-    .AddApplicationPart(typeof(CleanArchitecture.Presentation.AssemblyReference).Assembly);
-
-builder.Services.AddMediatR(cfr =>
-    cfr.RegisterServicesFromAssembly(typeof(CleanArchitecture.Application.AssemblyReference).Assembly));
-
-builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-builder.Services.AddValidatorsFromAssembly(typeof(CleanArchitecture.Application.AssemblyReference).Assembly);
-
-builder.Services.AddOpenApi(opt =>
-{
-    opt.AddDocumentTransformer<BearerSecuritySchemeTransformer>();
-});
 builder.Services.AddEndpointsApiExplorer();
 
 var app = builder.Build();
@@ -69,6 +16,7 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference(sc => sc.Layout = ScalarLayout.Classic);
 }
 
+app.UseCors();
 app.UseMiddlewareExtensions();
 
 app.UseHttpsRedirection();
