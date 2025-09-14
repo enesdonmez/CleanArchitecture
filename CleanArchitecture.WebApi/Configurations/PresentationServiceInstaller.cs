@@ -4,7 +4,7 @@ namespace CleanArchitecture.WebApi.Configurations;
 
 public sealed class PresentationServiceInstaller : IServiceInstaller
 {
-    public void InstallServices(IServiceCollection services, IConfiguration configuration)
+    public void InstallServices(IServiceCollection services, IConfiguration configuration, IHostBuilder host)
     {
         services.AddCors(options =>
         {

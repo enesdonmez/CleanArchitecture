@@ -11,7 +11,7 @@ namespace CleanArchitecture.WebApi.Configurations;
 
 public sealed class PersistenceDIServiceInstaller : IServiceInstaller
 {
-    public void InstallServices(IServiceCollection services, IConfiguration configuration)
+    public void InstallServices(IServiceCollection services, IConfiguration configuration, IHostBuilder host)
     {
         services.AddScoped<ICarService, CarService>();
         services.AddScoped<IAuthService, AuthService>();
